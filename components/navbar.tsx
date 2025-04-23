@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, Home, Info, Mail, Film } from "lucide-react"
+import { Menu, X, Home, Info, Mail, Film, Settings } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 
 export default function Navbar() {
@@ -65,6 +65,16 @@ export default function Navbar() {
                 >
                   <Mail className="mr-3" size={20} />
                   Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin"
+                  className="flex items-center text-xl py-2 text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  onClick={closeMenu}
+                >
+                  <Settings className="mr-3" size={20} />
+                  Admin
                 </Link>
               </li>
             </ul>

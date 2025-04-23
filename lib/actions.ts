@@ -1,34 +1,49 @@
 "use server"
 
-// This would typically connect to a database or external service
-// For demo purposes, we're returning a mock URL
+// Get the URL from the API route
 export async function getRedirectUrl(): Promise<string> {
-  // In a real application, you would:
-  // 1. Retrieve the URL from a database or external service
-  // 2. Validate the URL
-  // 3. Handle any errors
+  try {
+    // Use a relative URL which works in all environments
+    const response = await fetch("/api/url", {
+      cache: "no-store",
+      // Add these headers to ensure the request is properly handled
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-  // Simulating a delay to mimic a network request
-  await new Promise((resolve) => setTimeout(resolve, 500))
+    if (!response.ok) {
+      console.error("API response not OK:", response.status, response.statusText)
+      return "https://example.com" // Fallback URL
+    }
 
-  // Return a mock URL
-  return "https://vercel.com"
+    const data = await response.json()
+    return data.url || "https://example.com"
+  } catch (error) {
+    console.error("Error fetching redirect URL:", error)
+    return "https://example.com" // Fallback URL
+  }
 }
 
-// This action would handle POST requests with a URL
+// Also update the saveRedirectUrl function to use a relative URL
 export async function saveRedirectUrl(url: string): Promise<{ success: boolean }> {
-  // Validate the URL
   try {
-    new URL(url)
+    const response = await fetch("/api/url", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url }),
+    })
+
+    if (!response.ok) {
+      console.error("API response not OK:", response.status, response.statusText)
+      return { success: false }
+    }
+
+    return { success: true }
   } catch (error) {
+    console.error("Error saving URL:", error)
     return { success: false }
   }
-
-  // In a real application, you would save this URL to a database
-  console.log("Saving URL:", url)
-
-  // Simulating a delay to mimic a database operation
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return { success: true }
 }

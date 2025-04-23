@@ -15,6 +15,7 @@ export default function TimerSection() {
     const fetchUrl = async () => {
       try {
         const url = await getRedirectUrl()
+        console.log("Redirect URL fetched:", url)
         setRedirectUrl(url || "https://example.com") // Fallback URL
         setIsLoading(false)
       } catch (error) {

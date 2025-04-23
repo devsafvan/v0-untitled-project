@@ -1,5 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { saveRedirectUrl } from "@/lib/actions"
+
+// This is a global variable to store the URL between requests
+// In a production app, you would use a database
+let storedUrl = "https://example.com"
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,15 +13,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 })
     }
 
-    const result = await saveRedirectUrl(url)
+    // Store the URL
+    storedUrl = url
+    console.log("URL stored successfully:", storedUrl)
 
-    if (!result.success) {
-      return NextResponse.json({ error: "Invalid URL provided" }, { status: 400 })
-    }
-
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, url: storedUrl })
   } catch (error) {
     console.error("Error processing URL:", error)
     return NextResponse.json({ error: "Failed to process URL" }, { status: 500 })
   }
+}
+
+export async function GET() {
+  console.log("GET request received, returning URL:", storedUrl)
+  return NextResponse.json({ url: storedUrl })
 }
